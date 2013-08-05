@@ -1,0 +1,10 @@
+*.o
+*.~
+*.swp
+Maikefile
+*.user
+*.user*
+moc_*
+*.kdev4
+.kdev4/
+simpmouse
