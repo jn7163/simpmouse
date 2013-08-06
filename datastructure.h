@@ -37,7 +37,6 @@ public:
     PointersSet();
 
     bool append(PointerElement newElement);
-    //bool append(QVector<PointerElement> &newElementList);
     bool append(QString newName, int newId);
     bool clear();
     PointerElement &operator[] (int index);
