@@ -1,6 +1,7 @@
 #include "func.h"
 
-void initialize(PointersSet &mainSet)
+//void initialize(PointersSet &mainSet)
+void initialize()
 {
     getAllMouseInfo(mainSet);
 }
@@ -56,14 +57,28 @@ void getAllMouseInfo(PointersSet &toReturn)
 
 }
 
-bool applyConstDecel(PointerElement &element, double newConstDecel)
+bool applyCurChanges(PointerElement &element, double newConstDecel)
 {
-    qDebug() << "content element: " << element.getId();
-    QString str = QString("xinput set-prop %1 %2 %3").arg(element.getId()).arg(element.getConstDecelProperty()).arg(newConstDecel);
+    applyCurChangesTemporarily(newConstDecel);
+    element.setConstDecel(newConstDecel);
+    return true;
+}
+
+bool applyCurChangesTemporarily(double newConstDecel)
+{
+    //qDebug() << "content element: " << element.getId();
+    int pos = mainSet.getCurMousePos();
+    QString str = QString("xinput set-prop %1 %2 %3").arg(mainSet[pos].getId()).arg(mainSet[pos].getConstDecelProperty()).arg(newConstDecel);
     QProcess *process = new QProcess;
     process->start(str);
     process->waitForFinished();
     delete process;
-    element.setConstDecel(newConstDecel);
+    return true;
+}
+
+bool restoreCurMouseAttrs()
+{
+    int pos = mainSet.getCurMousePos();
+    applyCurChangesTemporarily(mainSet[pos].getConstDecel());
     return true;
 }

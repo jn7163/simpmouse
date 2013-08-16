@@ -5,6 +5,11 @@
 #include <QVector>
 #include <QDebug>
 
+//class PointersSet;
+/* mainSet contains all the attributes of moused and is the central data structure of the whole programme. */
+class PointersSet;
+extern PointersSet mainSet;
+
 class PointerElement
 {
     QString name;
@@ -33,6 +38,8 @@ class PointersSet
 {
 private:
     QVector<PointerElement> PointersVector;
+    int curMousePos;
+    /* currentMousePos is the number of currently selected PointerElement in mainSet. */
 public:
     PointersSet();
 
@@ -40,6 +47,9 @@ public:
     bool append(QString newName, int newId);
     bool clear();
     PointerElement &operator[] (int index);
+    
+    int getCurMousePos();
+    bool setCurMousePos(int newPos);
 
     int size();
 };
@@ -47,8 +57,6 @@ public:
 
 
 /* mainSet contains all the attributes of moused and is the central data structure of the whole programme. */
-extern PointersSet mainSet;
-/* currentMousePos is the number of currently selected PointerElement in mainSet. */
-extern int currentMousePos;
+//extern PointersSet mainSet;
 
 #endif // DATASTRUCTURE_H

@@ -52,6 +52,7 @@ void PointerElement::setConstDecel(double newConstDecel)
 PointersSet::PointersSet()
 {
     Q_ASSERT(PointersVector.size() == 0);
+    this->curMousePos = -1;
 }
 
 bool PointersSet::append(PointerElement newElement)
@@ -125,6 +126,23 @@ PointerElement &PointersSet::operator[] (int index)
 }
 
 
+int PointersSet::getCurMousePos()
+{
+    return curMousePos;
+}
+bool PointersSet::setCurMousePos(int newPos)
+{
+    if (newPos < 0 || newPos >= this->size() ) {
+        qDebug() << "Wrong number in setCurMousePos!";
+        return false;
+    }
+    // else:
+    this->curMousePos = newPos;
+    qDebug() << "New curMousePos: " << newPos;
+    return true;
+}
+
+
 int PointersSet::size()
 {
     return PointersVector.size();
@@ -133,4 +151,3 @@ int PointersSet::size()
 
 
 PointersSet mainSet;
-int currentMousePos = -1;

@@ -8,9 +8,16 @@
 
 #include "datastructure.h"
 
-void initialize(PointersSet &mainSet);
+extern PointersSet mainSet;
+
+//void initialize(PointersSet &mainSet);
+void initialize();
 void getAllMouseInfo(PointersSet &toReturn);
 
-bool applyConstDecel(PointerElement &element, double newConstDecel);
+bool applyCurChanges(PointerElement &element, double newConstDecel);
+bool applyCurChangesTemporarily(double newConstDecel);
+bool restoreCurMouseAttrs();
+
+
 
 #endif // FUNC_H

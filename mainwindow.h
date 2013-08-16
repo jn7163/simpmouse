@@ -30,7 +30,8 @@ private slots:
     void changeConstDecelSlider(double doubleVal);
     void changeConstDecelSlider(QString stringVal);
     
-    void changeCurrentMousePos(int newPos);
+    void changeCurMousePos(int newPos);
+    void cancelCurChanges();
 
     void setValueFromEdit();
 

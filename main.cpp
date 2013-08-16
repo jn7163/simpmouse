@@ -9,12 +9,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    initialize(mainSet);
+    //initialize(mainSet);
+    initialize();
 
     MainWindow w;
     w.show();
     
-    applyConstDecel(mainSet[0], 1);
+    //applyCurChanges(mainSet[0], 1);
 
     
     //return 0;

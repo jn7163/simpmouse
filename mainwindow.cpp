@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect( ui->constDecelSlider, SIGNAL(sliderReleased()), this, SLOT(setValueFromEdit()) );
     connect( ui->constDecelEdit, SIGNAL(textEdited(QString)), this, SLOT(setValueFromEdit()) );
 
-    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCurrentMousePos(int)) );
+    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCurMousePos(int)) );
     connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(showCurrentDetail(int)) );
 
 
@@ -58,20 +58,26 @@ void MainWindow::changeConstDecelSlider(QString stringVal)
     this->changeConstDecelSlider(doubleVal);
 }
 
-void MainWindow::changeCurrentMousePos(int newPos)
+void MainWindow::changeCurMousePos(int newPos)
 {
-    currentMousePos = newPos;
+    mainSet.setCurMousePos(newPos);
+}
+
+void MainWindow::cancelCurChanges()
+{
+    
 }
 
 void MainWindow::setValueFromEdit()
 {
-    if (currentMousePos == -1) {
-        throw "currentMousePos error!";
+    int curMousePos = mainSet.getCurMousePos();
+    if (curMousePos == -1) {
+        throw "curMousePos error!";
     }
-    qDebug() << "currentMousePos: " << currentMousePos;
+    qDebug() << "curMousePos: " << mainSet.getCurMousePos();
     double constDecelVal = (ui->constDecelEdit->text()).toDouble();
     qDebug() << "constDecelVal: " << constDecelVal;
-    applyConstDecel(mainSet[currentMousePos], constDecelVal);
+    applyCurChanges(mainSet[curMousePos], constDecelVal);
     return;
 }
 
