@@ -24,21 +24,24 @@ private:
 
 signals:
 private slots:
-    void changeConstDecelEdit(double doubleVal);
-    void changeConstDecelEdit(int intVal);
-    //void changeConstDecelEdit(QString stringVal);
-    void changeConstDecelSlider(double doubleVal);
-    void changeConstDecelSlider(QString stringVal);
     
     void changeCurMousePos(int newPos);
     void cancelCurChanges();
+    void cancelAllChanges();
 
-    void setValueFromEdit();
-
-    //void clearAll();
+    void applyChangesFromEdit();
+    void applyChangesTemporarilyFromEdit();
+    
+    
+    // Link the edit with the slider:
+    void changeConstDecelEdit(double doubleVal);
+    void changeConstDecelEdit(int intVal);
+    void changeConstDecelSlider(double doubleVal);
+    void changeConstDecelSlider(QString stringVal);
+    
 public slots:
     bool showMouseList(PointersSet &mainSet);
-    void showCurrentDetail(int currentRow);
+    void showCurDetail(int currentRow);
 };
 
 #endif // MAINWINDOW_H

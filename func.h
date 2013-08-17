@@ -14,9 +14,9 @@ extern PointersSet mainSet;
 void initialize();
 void getAllMouseInfo(PointersSet &toReturn);
 
-bool applyCurChanges(PointerElement &element, double newConstDecel);
-bool applyCurChangesTemporarily(double newConstDecel);
-bool restoreCurMouseAttrs();
+bool applyChanges(int mousePos, double newConstDecel);
+bool applyChangesTemporarily(int mousePos, double newConstDecel);
+bool restoreMouseAttrs(int mousePos);
 
 
 

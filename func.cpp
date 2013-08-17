@@ -57,18 +57,17 @@ void getAllMouseInfo(PointersSet &toReturn)
 
 }
 
-bool applyCurChanges(PointerElement &element, double newConstDecel)
+bool applyChanges(int mousePos, double newConstDecel)
 {
-    applyCurChangesTemporarily(newConstDecel);
-    element.setConstDecel(newConstDecel);
+    applyChangesTemporarily(mousePos, newConstDecel);
+    mainSet[mousePos].setConstDecel(newConstDecel);
     return true;
 }
 
-bool applyCurChangesTemporarily(double newConstDecel)
+bool applyChangesTemporarily(int mousePos, double newConstDecel)
 {
     //qDebug() << "content element: " << element.getId();
-    int pos = mainSet.getCurMousePos();
-    QString str = QString("xinput set-prop %1 %2 %3").arg(mainSet[pos].getId()).arg(mainSet[pos].getConstDecelProperty()).arg(newConstDecel);
+    QString str = QString("xinput set-prop %1 %2 %3").arg(mainSet[mousePos].getId()).arg(mainSet[mousePos].getConstDecelProperty()).arg(newConstDecel);
     QProcess *process = new QProcess;
     process->start(str);
     process->waitForFinished();
@@ -76,9 +75,9 @@ bool applyCurChangesTemporarily(double newConstDecel)
     return true;
 }
 
-bool restoreCurMouseAttrs()
+bool restoreMouseAttrs(int mousePos)
 {
-    int pos = mainSet.getCurMousePos();
-    applyCurChangesTemporarily(mainSet[pos].getConstDecel());
+    applyChangesTemporarily(mousePos, mainSet[mousePos].getConstDecel());
+    qDebug() << "mouse: " << mousePos << " restored.";
     return true;
 }

@@ -11,14 +11,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QValidator *editValidator = new QDoubleValidator(0, 1023, 3);
     ui->constDecelEdit->setValidator(editValidator);
 
-    // Connect:
+    // Link slider with edit:
     connect( ui->constDecelSlider, SIGNAL(sliderMoved(int)), this, SLOT(changeConstDecelEdit(int)) );
     connect( ui->constDecelEdit, SIGNAL(textEdited(QString)), this, SLOT(changeConstDecelSlider(QString)) );
-    connect( ui->constDecelSlider, SIGNAL(sliderReleased()), this, SLOT(setValueFromEdit()) );
-    connect( ui->constDecelEdit, SIGNAL(textEdited(QString)), this, SLOT(setValueFromEdit()) );
+    connect( ui->constDecelSlider, SIGNAL(sliderReleased()), this, SLOT(applyChangesTemporarilyFromEdit()) );
+    connect( ui->constDecelEdit, SIGNAL(textEdited(QString)), this, SLOT(applyChangesTemporarilyFromEdit()) );
 
+    
     connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCurMousePos(int)) );
-    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(showCurrentDetail(int)) );
+    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(showCurDetail(int)) );
+    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(cancelAllChanges()) ); // Here we must use the cancelAllChanges() because currentRow has already changed.
+    
+    // Apply, Cancel and Quit buttons:
+    connect( ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChangesFromEdit()) );
+    connect( ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelCurChanges()) );
 
 
     // Initialize:
@@ -27,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    cancelAllChanges();
     delete ui;
 }
 
@@ -65,10 +72,14 @@ void MainWindow::changeCurMousePos(int newPos)
 
 void MainWindow::cancelCurChanges()
 {
-    
+    int pos = mainSet.getCurMousePos();
+    double constDecelVal = mainSet[pos].getConstDecel();
+    applyChangesTemporarily(pos, constDecelVal);
+    changeConstDecelEdit(constDecelVal);
+    changeConstDecelSlider(constDecelVal);
 }
 
-void MainWindow::setValueFromEdit()
+void MainWindow::applyChangesFromEdit()
 {
     int curMousePos = mainSet.getCurMousePos();
     if (curMousePos == -1) {
@@ -77,7 +88,23 @@ void MainWindow::setValueFromEdit()
     qDebug() << "curMousePos: " << mainSet.getCurMousePos();
     double constDecelVal = (ui->constDecelEdit->text()).toDouble();
     qDebug() << "constDecelVal: " << constDecelVal;
-    applyCurChanges(mainSet[curMousePos], constDecelVal);
+    applyChanges(curMousePos, constDecelVal);
+    return;
+}
+void MainWindow::applyChangesTemporarilyFromEdit()
+{
+    qDebug() << "curMousePos: " << mainSet.getCurMousePos();
+    double constDecelVal = (ui->constDecelEdit->text()).toDouble();
+    qDebug() << "constDecelVal: " << constDecelVal;
+    applyChangesTemporarily(mainSet.getCurMousePos(), constDecelVal);
+    return;
+}
+
+void MainWindow::cancelAllChanges()
+{
+    for (int i=0; i<mainSet.size(); i++)
+        restoreMouseAttrs(i);
+    qDebug() << "Restored all temporary changes.";
     return;
 }
 
@@ -95,7 +122,7 @@ bool MainWindow::showMouseList(PointersSet &mainSet)
     return true;
 }
 
-void MainWindow::showCurrentDetail(int currentRow)
+void MainWindow::showCurDetail(int currentRow)
 {
     if (currentRow < 0 || currentRow > mainSet.size()-1 ) {
         throw "currentRow error!";

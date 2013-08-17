@@ -56,7 +56,4 @@ public:
 
 
 
-/* mainSet contains all the attributes of moused and is the central data structure of the whole programme. */
-//extern PointersSet mainSet;
-
 #endif // DATASTRUCTURE_H
