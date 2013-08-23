@@ -57,7 +57,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QPushButton *refreshButton;
     QSpacerItem *horizontalSpacer;
-    QPushButton *cancelButton;
+    QPushButton *discardButton;
     QPushButton *applyButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -196,10 +196,10 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        cancelButton = new QPushButton(centralWidget);
-        cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
+        discardButton = new QPushButton(centralWidget);
+        discardButton->setObjectName(QString::fromUtf8("discardButton"));
 
-        horizontalLayout->addWidget(cancelButton);
+        horizontalLayout->addWidget(discardButton);
 
         applyButton = new QPushButton(centralWidget);
         applyButton->setObjectName(QString::fromUtf8("applyButton"));
@@ -239,7 +239,7 @@ public:
         groupBox->setTitle(QApplication::translate("MainWindow", "Current Mouse Config", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("MainWindow", "Constant Deceleration:", 0, QApplication::UnicodeUTF8));
         refreshButton->setText(QApplication::translate("MainWindow", "&Refresh", 0, QApplication::UnicodeUTF8));
-        cancelButton->setText(QApplication::translate("MainWindow", "&Cancel", 0, QApplication::UnicodeUTF8));
+        discardButton->setText(QApplication::translate("MainWindow", "&Discard", 0, QApplication::UnicodeUTF8));
         applyButton->setText(QApplication::translate("MainWindow", "&Apply", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

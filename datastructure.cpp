@@ -112,15 +112,24 @@ bool PointersSet::append(QString newName, int newId)
 
 bool PointersSet::clear()
 {
+    // Use it prudently!
     PointersVector.clear();
+    curMousePos = -1;
     return true;
 }
 
 PointerElement &PointersSet::operator[] (int index)
 {
-    if (index > this->size()) {
-        throw "Overflow!";
+    /*
+    if (index < 0 || index >= this->size()) {
+        qDebug() << QString("Overflow when using operator[%1]").arg(index);
+        if (this->size() >0 )
+            return PointersVector[0];
+        else
+            exit(1);
     }
+    */
+    Q_ASSERT(index >= 0);
     //return PointersVector.at(index);
     return PointersVector[index];
 }
@@ -132,10 +141,13 @@ int PointersSet::getCurMousePos()
 }
 bool PointersSet::setCurMousePos(int newPos)
 {
+    Q_ASSERT(newPos < 0 || newPos >= this->size() );
+    /*
     if (newPos < 0 || newPos >= this->size() ) {
         qDebug() << "Wrong number in setCurMousePos!";
         return false;
     }
+    */
     // else:
     this->curMousePos = newPos;
     qDebug() << "New curMousePos: " << newPos;

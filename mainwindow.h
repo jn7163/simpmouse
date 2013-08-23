@@ -25,9 +25,9 @@ private:
 signals:
 private slots:
     
-    void changeCurMousePos(int newPos);
-    void cancelCurChanges();
-    void cancelAllChanges();
+    bool changeCurMouse(int newPos);
+    void restoreCurMouseAttrs();
+    void restoreAllMouseAttrs();
 
     void applyChangesFromEdit();
     void applyChangesTemporarilyFromEdit();
@@ -39,8 +39,14 @@ private slots:
     void changeConstDecelSlider(double doubleVal);
     void changeConstDecelSlider(QString stringVal);
     
+    void clearAllAndInitialize();
+    
+    
+    void disableConfigs();
+    void enableConfigs();
+    
 public slots:
-    bool showMouseList(PointersSet &mainSet);
+    bool refreshMouseList(PointersSet &mainSet);
     void showCurDetail(int currentRow);
 };
 

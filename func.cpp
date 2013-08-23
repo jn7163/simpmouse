@@ -3,6 +3,7 @@
 //void initialize(PointersSet &mainSet)
 void initialize()
 {
+    //mainSet.clear();
     getAllMouseInfo(mainSet);
 }
 
@@ -66,6 +67,7 @@ bool applyChanges(int mousePos, double newConstDecel)
 
 bool applyChangesTemporarily(int mousePos, double newConstDecel)
 {
+    Q_ASSERT( mousePos >= 0 && mousePos <= mainSet.size() );
     //qDebug() << "content element: " << element.getId();
     QString str = QString("xinput set-prop %1 %2 %3").arg(mainSet[mousePos].getId()).arg(mainSet[mousePos].getConstDecelProperty()).arg(newConstDecel);
     QProcess *process = new QProcess;

@@ -45,7 +45,7 @@ public:
 
     bool append(PointerElement newElement);
     bool append(QString newName, int newId);
-    bool clear();
+    bool clear(); // Use it prudently!
     PointerElement &operator[] (int index);
     
     int getCurMousePos();

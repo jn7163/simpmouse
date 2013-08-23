@@ -18,22 +18,24 @@ MainWindow::MainWindow(QWidget *parent) :
     connect( ui->constDecelEdit, SIGNAL(textEdited(QString)), this, SLOT(applyChangesTemporarilyFromEdit()) );
 
     
-    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCurMousePos(int)) );
-    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(showCurDetail(int)) );
-    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(cancelAllChanges()) ); // Here we must use the cancelAllChanges() because currentRow has already changed.
+    connect( ui->mouseList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCurMouse(int)) );
     
-    // Apply, Cancel and Quit buttons:
+    // Apply, Cancel, Refresh and Quit buttons:
     connect( ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChangesFromEdit()) );
-    connect( ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelCurChanges()) );
+    connect( ui->refreshButton, SIGNAL(clicked()), this, SLOT(clearAllAndInitialize()) );
+    connect( ui->discardButton, SIGNAL(clicked()), this, SLOT(restoreCurMouseAttrs()) );
 
 
     // Initialize:
-    this->showMouseList(mainSet);
+    this->refreshMouseList(mainSet);
+    
+    // Testing:
+    // disableConfigs();
 }
 
 MainWindow::~MainWindow()
 {
-    cancelAllChanges();
+    restoreAllMouseAttrs();
     delete ui;
 }
 
@@ -65,12 +67,27 @@ void MainWindow::changeConstDecelSlider(QString stringVal)
     this->changeConstDecelSlider(doubleVal);
 }
 
-void MainWindow::changeCurMousePos(int newPos)
+bool MainWindow::changeCurMouse(int newPos)
 {
+    // Note: All of the -1 issue should be treated at here.
+    if (newPos == -1) {
+        qDebug() << "changeCurMouse: pos is -1. Are you using the refresh button?";
+        ui->nameLabel->setText("");
+        disableConfigs();
+        return false;
+    }
+    if (mainSet.getCurMousePos() == -1) {
+        // That means user just selected a mouse for first time.
+        enableConfigs();
+    } else {
+        restoreCurMouseAttrs();
+    }
     mainSet.setCurMousePos(newPos);
+    showCurDetail(newPos);
+    return true;
 }
 
-void MainWindow::cancelCurChanges()
+void MainWindow::restoreCurMouseAttrs()
 {
     int pos = mainSet.getCurMousePos();
     double constDecelVal = mainSet[pos].getConstDecel();
@@ -82,9 +99,6 @@ void MainWindow::cancelCurChanges()
 void MainWindow::applyChangesFromEdit()
 {
     int curMousePos = mainSet.getCurMousePos();
-    if (curMousePos == -1) {
-        throw "curMousePos error!";
-    }
     qDebug() << "curMousePos: " << mainSet.getCurMousePos();
     double constDecelVal = (ui->constDecelEdit->text()).toDouble();
     qDebug() << "constDecelVal: " << constDecelVal;
@@ -93,14 +107,15 @@ void MainWindow::applyChangesFromEdit()
 }
 void MainWindow::applyChangesTemporarilyFromEdit()
 {
-    qDebug() << "curMousePos: " << mainSet.getCurMousePos();
+    int curMousePos = mainSet.getCurMousePos();
+    qDebug() << "curMousePos: " << curMousePos;
     double constDecelVal = (ui->constDecelEdit->text()).toDouble();
     qDebug() << "constDecelVal: " << constDecelVal;
-    applyChangesTemporarily(mainSet.getCurMousePos(), constDecelVal);
+    applyChangesTemporarily(curMousePos, constDecelVal);
     return;
 }
 
-void MainWindow::cancelAllChanges()
+void MainWindow::restoreAllMouseAttrs()
 {
     for (int i=0; i<mainSet.size(); i++)
         restoreMouseAttrs(i);
@@ -108,10 +123,11 @@ void MainWindow::cancelAllChanges()
     return;
 }
 
-bool MainWindow::showMouseList(PointersSet &mainSet)
+bool MainWindow::refreshMouseList(PointersSet &mainSet)
 {
+    ui->mouseList->clear(); // note: this will emit currentRowChanged(-1).
     if (mainSet.size() == 0) {
-        qDebug() << "There is no element in mainSet.";
+        qDebug() << "Warning: There is no element in mainSet.";
         return false;
     }
 
@@ -124,11 +140,37 @@ bool MainWindow::showMouseList(PointersSet &mainSet)
 
 void MainWindow::showCurDetail(int currentRow)
 {
-    if (currentRow < 0 || currentRow > mainSet.size()-1 ) {
-        throw "currentRow error!";
-    }
     PointerElement *curElement = &(mainSet[currentRow]);
     ui->nameLabel->setText( curElement->getName() );
     changeConstDecelEdit(curElement->getConstDecel());
     changeConstDecelSlider(curElement->getConstDecel());
+}
+
+
+
+void MainWindow::clearAllAndInitialize()
+{
+    
+    this->restoreCurMouseAttrs();
+    ui->nameLabel->setText("");
+    //this->disableConfigs();
+    mainSet.clear();
+    initialize();
+    this->refreshMouseList(mainSet); // Note: this will emit currentRowChanged(-1).
+    
+    return;
+}
+
+
+void MainWindow::disableConfigs()
+{
+    ui->constDecelEdit->setEnabled(false);
+    ui->constDecelSlider->setEnabled(false);
+    return;
+}
+void MainWindow::enableConfigs()
+{
+    ui->constDecelEdit->setEnabled(true);
+    ui->constDecelSlider->setEnabled(true);
+    return;
 }
