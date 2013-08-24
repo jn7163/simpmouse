@@ -1,0 +1,21 @@
+A simple toy to change the constant deceleration of a mouse in an easy GUI way.
+It uses xinput to change the value of Constant Deceleration.
+
+Created by Ukyoi.
+
+
+
+== Compiling Guide ==
+
+0. Make sure you have Qt 4 and qmake which fits your Qt version.
+1. Open the directory on your terminal.
+2. Run "qmake" (or alternatives on your distribution e.g. qmake-qt4 on Arch linux) to generate Makefile.
+3. Run "make" to compile it.
+
+
+== Using Guide ==
+
+0. Compile it first.
+1. Run the executable file (simpmouse).
+2. Select your mouse on the list and set the value of Constant Deceleration.
+3. Press Apply to apply the change.
